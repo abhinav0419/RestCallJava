@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd  
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context.xsd     
+		http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+	<context:annotation-config />
+
+	<context:property-placeholder location="/WEB-INF/database.properties" />
+
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+		<property name="driverClass" value="${database.driverClassName}" />
+		<property name="jdbcUrl" value="${database.url}" />
+		<property name="user" value="${database.username}" />
+		<property name="password" value="${database.password}" />
+		<property name="minPoolSize" value="15" />
+		<property name="maxPoolSize" value="60" />
+		<property name="breakAfterAcquireFailure" value="false" />
+		<property name="acquireRetryAttempts" value="3" />
+		<property name="idleConnectionTestPeriod" value="300" />
+		<property name="testConnectionOnCheckout" value="true" />
+	</bean>
+
+	
+	<bean id="attendanceDao" class="com.rest.attendance.dao.impl.AttendanceDAOImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<!-- <bean id="attendanceService" class="com.rest.attendance.service.impl.AttendanceServiceImpl">
+		<property name="attendanceDao" ref="attendanceDao" />
+	</bean> -->
+
+	 <context:component-scan base-package="com.rest.attendance.service.impl" /> 
+	 
+	   <!--  To get the context handler in all the layers.. -->
+    <bean id="applicationContext" class="com.rest.attendance.context.ApplicationContextProvider" />
+
+</beans>
